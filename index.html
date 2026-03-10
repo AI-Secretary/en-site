@@ -1,524 +1,1023 @@
-import React, { useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import {
-  ArrowUpRight,
-  Bot,
-  ChevronRight,
-  Mail,
-  MapPin,
-  Megaphone,
-  Menu,
-  PenTool,
-  Sparkles,
-  TrendingUp,
-  X,
-  Layers3,
-  Building2,
-  BadgeCheck,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>合同会社EN | AI × Marketing × Creative</title>
+  <meta name="description" content="合同会社ENは、AIコンサルティング、マーケティング支援、ECディレクション、クリエイティブ制作を横断し、ブランドと事業の成長導線を設計します。" />
+  <meta name="theme-color" content="#111111" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f1eb;
+      --bg2: #ece7df;
+      --card: rgba(255,255,255,0.72);
+      --card-strong: rgba(255,255,255,0.9);
+      --text: #111111;
+      --muted: rgba(17,17,17,0.62);
+      --line: rgba(17,17,17,0.08);
+      --shadow: 0 20px 80px rgba(0,0,0,0.08);
+      --shadow-strong: 0 34px 110px rgba(0,0,0,0.16);
+      --radius: 24px;
+      --radius-lg: 34px;
+      --max: 1180px;
+      --ease: cubic-bezier(.22, 1, .36, 1);
+    }
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
-  },
-};
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Noto Sans JP', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(255,255,255,0.96), transparent 24%),
+        radial-gradient(circle at left 30%, rgba(255,255,255,0.55), transparent 22%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+      line-height: 1.7;
+      letter-spacing: .02em;
+      overflow-x: hidden;
+    }
 
-const stagger = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.12 } },
-};
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
 
-const services = [
-  {
-    icon: Bot,
-    title: "AI Consulting",
-    description:
-      "AIを導入するだけで終わらせず、業務フロー、運用、成果導線までを整理して実装します。",
-    bullets: ["業務整理", "AI活用設計", "運用ルール構築"],
-  },
-  {
-    icon: Megaphone,
-    title: "Marketing",
-    description:
-      "ブランド戦略、販促設計、SNS・広告・導線改善まで、一気通貫で整えます。",
-    bullets: ["戦略立案", "導線設計", "販促改善"],
-  },
-  {
-    icon: PenTool,
-    title: "Creative",
-    description:
-      "LP、提案資料、コピー、世界観設計まで、売れる表現に落とし込んで制作します。",
-    bullets: ["LP制作", "資料制作", "コピー開発"],
-  },
-  {
-    icon: TrendingUp,
-    title: "EC Direction",
-    description:
-      "商品企画、見せ方、販売設計を整理し、ECやD2Cの立ち上げと改善を支援します。",
-    bullets: ["商品企画", "販売設計", "改善運用"],
-  },
-];
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .035;
+      background-image: radial-gradient(#000 0.55px, transparent 0.55px);
+      background-size: 18px 18px;
+      z-index: 0;
+    }
 
-const strengths = [
-  {
-    title: "AI × MARKETING × CREATIVE",
-    text: "領域を分断せず、戦略から制作、運用までを一本の線でつなぎます。",
-    stat: "01",
-  },
-  {
-    title: "SMARTPHONE FIRST",
-    text: "最初にスマホで美しく伝わることを前提に、UI・導線・印象を設計します。",
-    stat: "02",
-  },
-  {
-    title: "RESULT DRIVEN",
-    text: "作るだけで終わらず、営業・販促・販売成果に接続することを重視します。",
-    stat: "03",
-  },
-];
+    .orb {
+      position: fixed;
+      border-radius: 999px;
+      filter: blur(48px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: .68;
+      mix-blend-mode: screen;
+      background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.35) 35%, rgba(255,255,255,0) 72%);
+    }
+    .orb-1 { width: 260px; height: 260px; top: -80px; right: -60px; animation: float1 13s ease-in-out infinite; }
+    .orb-2 { width: 320px; height: 320px; left: -140px; top: 28%; animation: float2 15s ease-in-out infinite; }
+    .orb-3 { width: 300px; height: 300px; right: 2%; bottom: -100px; animation: float3 12s ease-in-out infinite; }
+    @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-10px,16px)} }
+    @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(16px,-10px)} }
+    @keyframes float3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-8px,-16px)} }
 
-const cases = [
-  {
-    label: "Brand Design",
-    title: "ブランドの魅力を、伝わる形に翻訳する。",
-    text: "世界観、言葉、見せ方を整理し、顧客に届くブランド体験へ落とし込みます。",
-  },
-  {
-    label: "Sales Support",
-    title: "営業や提案を、勝てる見せ方に変える。",
-    text: "提案資料、LP、導線、比較のされ方まで含めて、売れる営業環境を整えます。",
-  },
-  {
-    label: "Creative Direction",
-    title: "美しさと成果の両立を設計する。",
-    text: "ただおしゃれなだけでなく、行動を生むクリエイティブに仕上げます。",
-  },
-  {
-    label: "EC / D2C",
-    title: "商品を、選ばれる状態にする。",
-    text: "売り方、見せ方、価格の伝え方を整理し、購入される流れをデザインします。",
-  },
-];
+    .wrap {
+      width: min(calc(100% - 28px), var(--max));
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
 
-const navItems = [
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Why EN", href: "#why" },
-  { label: "Case", href: "#case" },
-  { label: "Company", href: "#company" },
-  { label: "Contact", href: "#contact" },
-];
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 80;
+      background: rgba(244,241,235,0.72);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(17,17,17,0.05);
+    }
+    .header-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
 
-function GlassOrb({ className }: { className?: string }) {
-  return (
-    <div
-      className={`absolute rounded-full blur-3xl opacity-60 ${className || ""}`}
-      style={{
-        background:
-          "radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.25) 35%, rgba(255,255,255,0) 70%)",
-      }}
-    />
-  );
-}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.05);
+      overflow: hidden;
+      padding: 6px;
+      flex: none;
+    }
+    .brand-mark img { width: 100%; height: 100%; object-fit: contain; }
+    .brand-name {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+    .brand-sub {
+      margin-top: 3px;
+      font-size: 10px;
+      color: rgba(17,17,17,0.5);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
 
-function FloatingTag({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`rounded-2xl border border-black/5 bg-white/80 px-3 py-2 shadow-[0_18px_40px_rgba(0,0,0,0.08)] backdrop-blur-md ${className}`}>
-      <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-black/45">EN</div>
-      <div className="mt-1 text-xs font-medium leading-5 text-black/80">{children}</div>
-    </div>
-  );
-}
+    .desktop-nav {
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+    .desktop-nav a {
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(17,17,17,0.72);
+      transition: .25s var(--ease);
+    }
+    .desktop-nav a:hover {
+      background: rgba(255,255,255,0.72);
+      color: #111;
+      transform: translateY(-1px);
+    }
 
-export default function ENMobileLandingPage() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const nav = useMemo(() => navItems, []);
+    .menu-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.86);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      flex: none;
+    }
+    .menu-btn span,
+    .menu-btn::before,
+    .menu-btn::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 2px;
+      background: #111;
+      border-radius: 999px;
+      transition: .25s var(--ease);
+    }
+    .menu-btn::before { transform: translateY(-6px); }
+    .menu-btn::after { transform: translateY(6px); }
+    .menu-btn.active span { opacity: 0; }
+    .menu-btn.active::before { transform: rotate(45deg); }
+    .menu-btn.active::after { transform: rotate(-45deg); }
 
-  return (
-    <div className="min-h-screen overflow-x-hidden bg-[#f4f1eb] text-[#101010]">
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <GlassOrb className="-right-16 -top-12 h-64 w-64" />
-        <GlassOrb className="left-[-100px] top-[32%] h-72 w-72" />
-        <motion.div
-          animate={{ y: [0, -18, 0], x: [0, 10, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-[-80px] right-[4%] h-72 w-72 rounded-full blur-3xl opacity-45"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.2) 35%, rgba(255,255,255,0) 72%)",
-          }}
-        />
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{ backgroundImage: "radial-gradient(#000 0.55px, transparent 0.55px)", backgroundSize: "20px 20px" }}
-        />
+    .mobile-nav {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows .35s var(--ease);
+      border-top: 1px solid rgba(17,17,17,0.04);
+    }
+    .mobile-nav.open { grid-template-rows: 1fr; }
+    .mobile-nav-inner { overflow: hidden; }
+    .mobile-nav-links {
+      padding: 14px 0 18px;
+      display: grid;
+      gap: 10px;
+    }
+    .mobile-nav a {
+      padding: 13px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.72);
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.03);
+    }
+
+    .hero { padding: 18px 0 10px; }
+    .hero-shell {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(17,17,17,0.08);
+      background:
+        radial-gradient(circle at 100% 0%, rgba(255,255,255,0.96), transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,0.74) 0%, rgba(255,255,255,0.58) 100%);
+      box-shadow: var(--shadow);
+    }
+    .hero-grid { display: grid; gap: 0; }
+    .hero-copy {
+      padding: 28px 20px 18px;
+      position: relative;
+      z-index: 3;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid var(--line);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      box-shadow: 0 12px 26px rgba(0,0,0,0.04);
+    }
+    .eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #111;
+      animation: pulse 1.8s ease infinite;
+    }
+    @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.55);opacity:.35} }
+
+    h1 {
+      margin: 18px 0 0;
+      font-size: clamp(42px, 14vw, 82px);
+      font-weight: 900;
+      line-height: .92;
+      letter-spacing: -.09em;
+    }
+    .hero-lead {
+      margin: 18px 0 0;
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 38ch;
+    }
+    .hero-actions {
+      margin-top: 22px;
+      display: grid;
+      gap: 10px;
+    }
+    .btn {
+      min-height: 52px;
+      padding: 0 18px;
+      border-radius: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 1px solid transparent;
+      font-size: 14px;
+      font-weight: 700;
+      transition: .25s var(--ease);
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary {
+      background: #111;
+      color: #fff;
+      box-shadow: 0 20px 46px rgba(0,0,0,0.14);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.84);
+      border-color: var(--line);
+      color: #111;
+    }
+
+    .hero-stats {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .stat {
+      padding: 14px 10px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.66);
+      border: 1px solid var(--line);
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+    .stat strong {
+      display: block;
+      font-size: 20px;
+      letter-spacing: -.05em;
+      line-height: 1;
+    }
+    .stat span {
+      display: block;
+      margin-top: 4px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      color: rgba(17,17,17,0.48);
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 430px;
+      padding: 10px 16px 24px;
+      display: grid;
+      align-items: end;
+    }
+    .phone-stage {
+      position: relative;
+      width: min(100%, 344px);
+      height: 420px;
+      margin: 0 auto;
+    }
+    .phone {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 100%;
+      max-width: 332px;
+      height: 100%;
+      border-radius: 38px;
+      padding: 10px;
+      background: linear-gradient(180deg, #1c1c1c 0%, #080808 100%);
+      box-shadow: var(--shadow-strong);
+      transform: perspective(1500px) rotateY(-10deg) rotateX(5deg);
+    }
+    .phone-screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 29px;
+      background: linear-gradient(180deg, #faf8f4 0%, #ece6de 100%);
+    }
+    .phone-screen::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 94px;
+      height: 24px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.9);
+      z-index: 3;
+    }
+    .screen-inner {
+      position: absolute;
+      inset: 0;
+      padding: 58px 16px 16px;
+    }
+    .screen-logo {
+      width: 92px;
+      height: 92px;
+      margin: 0 auto;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(17,17,17,0.08);
+      box-shadow: 0 18px 46px rgba(0,0,0,0.08);
+      display: grid;
+      place-items: center;
+      padding: 12px;
+      animation: logoFloat 5.8s ease-in-out infinite;
+    }
+    @keyframes logoFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    .screen-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .screen-title {
+      margin: 18px auto 0;
+      text-align: center;
+      font-size: 28px;
+      line-height: 1.02;
+      letter-spacing: -.08em;
+      font-weight: 800;
+      max-width: 250px;
+    }
+    .screen-sub {
+      margin: 12px auto 0;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(17,17,17,0.55);
+      max-width: 240px;
+      line-height: 1.7;
+    }
+
+    .floating-tag {
+      position: absolute;
+      max-width: 148px;
+      padding: 10px 12px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(17,17,17,0.06);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.08);
+      backdrop-filter: blur(12px);
+    }
+    .floating-tag small {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(17,17,17,0.44);
+    }
+    .floating-tag strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: rgba(17,17,17,0.84);
+    }
+    .tag-a { left: 0; top: 52px; animation: driftA 8s ease-in-out infinite; }
+    .tag-b { right: 0; top: 176px; animation: driftB 7s ease-in-out infinite; }
+    .tag-c { left: 22px; bottom: 14px; animation: driftC 9s ease-in-out infinite; }
+    @keyframes driftA { 0%,100%{transform:translate(0,0)} 50%{transform:translate(8px,-8px)} }
+    @keyframes driftB { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-8px,10px)} }
+    @keyframes driftC { 0%,100%{transform:translate(0,0)} 50%{transform:translate(6px,-12px)} }
+
+    section.block { padding: 16px 0; }
+    .section-head { margin-bottom: 14px; }
+    .kicker {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: rgba(17,17,17,0.46);
+    }
+    .section-title {
+      margin: 8px 0 0;
+      font-size: clamp(30px, 9vw, 46px);
+      line-height: 1.05;
+      letter-spacing: -.08em;
+      font-weight: 800;
+    }
+
+    .glass-card {
+      border-radius: 30px;
+      border: 1px solid rgba(17,17,17,0.08);
+      background: rgba(255,255,255,0.68);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+    .pad { padding: 24px 20px; }
+    .about-grid,
+    .company-grid,
+    .services-grid,
+    .strengths-grid,
+    .case-grid { display: grid; gap: 14px; }
+    .copy,
+    .card-copy { font-size: 14px; color: var(--muted); }
+    .pills {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pill,
+    .service-bullets span,
+    .case-label {
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(17,17,17,0.08);
+      background: rgba(255,255,255,0.82);
+      display: inline-flex;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(17,17,17,0.62);
+    }
+    .position-list { display: grid; gap: 12px; margin-top: 16px; }
+    .position-item {
+      padding: 15px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(17,17,17,0.08);
+      background: rgba(255,255,255,0.76);
+      font-size: 14px;
+      color: rgba(17,17,17,0.76);
+    }
+
+    .service-card,
+    .case-card,
+    .strength-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 100%;
+      transition: transform .35s var(--ease), box-shadow .35s var(--ease);
+    }
+    .service-card:hover,
+    .case-card:hover,
+    .strength-card:hover { transform: translateY(-4px); }
+    .service-card::after,
+    .case-card::after,
+    .strength-card::after {
+      content: '';
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 72%);
+      pointer-events: none;
+    }
+    .service-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .service-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(17,17,17,0.08);
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.05);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .service-num {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      color: rgba(17,17,17,0.34);
+    }
+    h3 {
+      margin: 16px 0 0;
+      font-size: 28px;
+      line-height: 1.08;
+      letter-spacing: -.06em;
+      font-weight: 800;
+    }
+    .service-bullets {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .strength-num {
+      font-size: 42px;
+      line-height: 1;
+      letter-spacing: -.08em;
+      font-weight: 800;
+      color: rgba(17,17,17,0.18);
+    }
+
+    .company-list { display: grid; gap: 14px; margin-top: 18px; }
+    .company-row {
+      display: flex;
+      gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(17,17,17,0.08);
+    }
+    .company-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .icon-box {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(17,17,17,0.08);
+      flex: none;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .company-row small,
+    .statement small {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(17,17,17,0.42);
+    }
+    .company-row strong,
+    .statement strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(17,17,17,0.84);
+      line-height: 1.7;
+    }
+    .statement-box {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 24px;
+      border: 1px solid rgba(17,17,17,0.08);
+      background: rgba(255,255,255,0.78);
+    }
+
+    .contact-shell {
+      position: relative;
+      overflow: hidden;
+      border-radius: 34px;
+      background: #111;
+      color: #fff;
+      box-shadow: 0 26px 90px rgba(0,0,0,0.18);
+      border: 1px solid rgba(17,17,17,0.08);
+    }
+    .contact-shell::before,
+    .contact-shell::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(35px);
+      background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 70%);
+      pointer-events: none;
+    }
+    .contact-shell::before { width: 180px; height: 180px; top: -70px; right: -60px; }
+    .contact-shell::after { width: 160px; height: 160px; bottom: -50px; left: -40px; }
+    .contact-inner {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 34px 18px;
+    }
+    .contact-title {
+      margin: 10px 0 0;
+      font-size: clamp(36px, 10vw, 58px);
+      line-height: 1.02;
+      letter-spacing: -.08em;
+      font-weight: 800;
+    }
+    .contact-copy {
+      margin: 14px auto 0;
+      max-width: 42ch;
+      font-size: 14px;
+      color: rgba(255,255,255,0.68);
+    }
+    .mail-btn {
+      margin-top: 22px;
+      min-height: 52px;
+      padding: 0 18px;
+      border-radius: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #fff;
+      color: #111;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 16px 46px rgba(255,255,255,0.14);
+      transition: .25s var(--ease);
+    }
+    .mail-btn:hover { transform: translateY(-1px); }
+    .domain-note {
+      margin-top: 12px;
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.42);
+    }
+
+    .footer {
+      padding: 16px 0 34px;
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(17,17,17,0.36);
+      position: relative;
+      z-index: 2;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px) scale(.985);
+      transition: opacity .9s var(--ease), transform .9s var(--ease);
+      will-change: transform, opacity;
+    }
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    @media (min-width: 768px) {
+      .wrap { width: min(calc(100% - 48px), var(--max)); }
+      .header-inner { min-height: 80px; }
+      .hero { padding-top: 28px; }
+      .hero-grid { grid-template-columns: 1.03fr .97fr; }
+      .hero-copy { padding: 48px 38px 36px; }
+      .hero-actions { display: flex; flex-wrap: wrap; }
+      .hero-visual { min-height: 620px; padding: 20px 24px 28px; }
+      .phone-stage { width: min(100%, 420px); height: 540px; }
+      .phone { max-width: 372px; }
+      .screen-title { font-size: 34px; max-width: 290px; }
+      .screen-sub { font-size: 13px; max-width: 270px; }
+      .tag-b { top: 205px; }
+      .pad { padding: 30px 28px; }
+      .about-grid,
+      .company-grid { grid-template-columns: 1.12fr .88fr; }
+      .services-grid,
+      .case-grid { grid-template-columns: repeat(2, 1fr); }
+      .strengths-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (min-width: 1024px) {
+      .desktop-nav { display: flex; }
+      .menu-btn,
+      .mobile-nav { display: none !important; }
+      .hero-copy { padding: 64px 52px 52px; }
+      .pad { padding: 34px 32px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <header class="site-header">
+    <div class="wrap">
+      <div class="header-inner">
+        <a href="#top" class="brand" aria-label="EN トップへ戻る">
+          <span class="brand-mark"><img src="logo.png" alt="ENロゴ"></span>
+          <span>
+            <span class="brand-name">EN</span>
+            <span class="brand-sub">AI × Marketing × Creative</span>
+          </span>
+        </a>
+
+        <nav class="desktop-nav" aria-label="グローバルナビゲーション">
+          <a href="#about">About</a>
+          <a href="#services">Services</a>
+          <a href="#why">Why EN</a>
+          <a href="#case">Case</a>
+          <a href="#company">Company</a>
+          <a href="#contact">Contact</a>
+        </nav>
+
+        <button class="menu-btn" id="menuBtn" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobileNav"><span></span></button>
       </div>
 
-      <header className="sticky top-0 z-50 border-b border-black/5 bg-[#f4f1eb]/70 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-          <a href="#top" className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-black/10 bg-white/85 shadow-sm overflow-hidden">
-              <img src="/logo.png" alt="EN logo" className="h-full w-full object-contain p-2" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold tracking-[0.22em]">EN</div>
-              <div className="text-[10px] uppercase tracking-[0.24em] text-black/50">AI × Marketing × Creative</div>
-            </div>
-          </a>
-
-          <nav className="hidden items-center gap-1 lg:flex">
-            {nav.map((item) => (
-              <a key={item.href} href={item.href} className="rounded-xl px-4 py-2 text-sm font-medium text-black/70 transition hover:bg-white/70 hover:text-black">
-                {item.label}
-              </a>
-            ))}
-          </nav>
-
-          <button onClick={() => setMenuOpen((v) => !v)} className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-black/10 bg-white/85 shadow-sm lg:hidden" aria-label="menu">
-            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-
-        {menuOpen && (
-          <div className="border-t border-black/5 px-4 pb-4 pt-3 lg:hidden">
-            <div className="mx-auto grid max-w-6xl gap-2">
-              {nav.map((item) => (
-                <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className="rounded-2xl border border-black/8 bg-white/80 px-4 py-3 text-sm font-medium shadow-sm">
-                  {item.label}
-                </a>
-              ))}
-            </div>
+      <nav class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-inner">
+          <div class="mobile-nav-links">
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#why">Why EN</a>
+            <a href="#case">Case</a>
+            <a href="#company">Company</a>
+            <a href="#contact">Contact</a>
           </div>
-        )}
-      </header>
+        </div>
+      </nav>
+    </div>
+  </header>
 
-      <main id="top" className="relative z-10">
-        <section className="px-4 pb-8 pt-5 sm:px-6 sm:pt-8">
-          <div className="mx-auto max-w-6xl overflow-hidden rounded-[34px] border border-black/8 bg-white/55 shadow-[0_24px_80px_rgba(0,0,0,0.08)] backdrop-blur-xl">
-            <div className="grid lg:grid-cols-2">
-              <motion.div initial="hidden" animate="show" variants={stagger} className="relative px-5 pb-7 pt-7 sm:px-8 sm:pb-10 sm:pt-10 lg:px-12 lg:py-14">
-                <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-black/8 bg-white/85 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-black/75">
-                  <Sparkles className="h-3.5 w-3.5" /> Growth Design Partner
-                </motion.div>
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero-shell reveal show">
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <div class="eyebrow"><span class="eyebrow-dot"></span> Growth Design Partner</div>
+              <h1>作るだけで<br>終わらせない。<br>売れるまで<br><em style="font-style:italic;color:rgba(17,17,17,.72)">設計する。</em></h1>
+              <p class="hero-lead">合同会社ENは、AIコンサルティング、マーケティング支援、ECディレクション、クリエイティブ制作を横断し、ブランドと事業の成長導線を設計するパートナーです。美しさだけでなく、成果に接続する設計を重視します。</p>
 
-                <motion.h1 variants={fadeUp} className="mt-5 text-[42px] font-semibold leading-[0.92] tracking-[-0.085em] sm:text-[58px] lg:text-[78px]">
-                  作るだけで
-                  <br />
-                  終わらせない。
-                  <br />
-                  売れるまで
-                  <span className="italic text-black/75">設計する。</span>
-                </motion.h1>
+              <div class="hero-actions">
+                <a href="#contact" class="btn btn-primary">お問い合わせ</a>
+                <a href="#services" class="btn btn-secondary">サービスを見る</a>
+              </div>
 
-                <motion.p variants={fadeUp} className="mt-5 max-w-xl text-sm leading-7 text-black/60 sm:text-[15px]">
-                  合同会社ENは、AIコンサルティング、マーケティング支援、ECディレクション、クリエイティブ制作を横断し、企業やブランドの成長導線を設計するパートナーです。美しさだけでなく、成果に接続する設計を重視します。
-                </motion.p>
+              <div class="hero-stats">
+                <div class="stat"><strong>AI</strong><span>Consulting</span></div>
+                <div class="stat"><strong>SNS</strong><span>Marketing</span></div>
+                <div class="stat"><strong>LP</strong><span>Creative</span></div>
+              </div>
+            </div>
 
-                <motion.div variants={fadeUp} className="mt-6 flex flex-col gap-3 sm:flex-row">
-                  <Button asChild className="h-12 rounded-2xl bg-black px-5 text-white hover:bg-black/90">
-                    <a href="#contact">
-                      お問い合わせ <ChevronRight className="ml-1 h-4 w-4" />
-                    </a>
-                  </Button>
-                  <Button asChild variant="outline" className="h-12 rounded-2xl border-black/10 bg-white/75 px-5 hover:bg-white">
-                    <a href="#services">サービスを見る</a>
-                  </Button>
-                </motion.div>
-
-                <motion.div variants={fadeUp} className="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
-                  {[
-                    { value: "AI", label: "Consulting" },
-                    { value: "SNS", label: "Marketing" },
-                    { value: "LP", label: "Creative" },
-                  ].map((item) => (
-                    <div key={item.label} className="rounded-2xl border border-black/8 bg-white/70 px-3 py-4 text-center backdrop-blur-sm">
-                      <div className="text-xl font-semibold tracking-[-0.06em] sm:text-2xl">{item.value}</div>
-                      <div className="mt-1 text-[10px] uppercase tracking-[0.18em] text-black/45 sm:text-[11px]">{item.label}</div>
+            <div class="hero-visual">
+              <div class="phone-stage">
+                <div class="phone">
+                  <div class="phone-screen">
+                    <div class="screen-inner">
+                      <div class="screen-logo"><img src="logo.png" alt="ENロゴ"></div>
+                      <div class="screen-title">AI × Marketing<br>× Creative</div>
+                      <div class="screen-sub">クリエイティブと成果を両立する、スマホ起点のブランドサイト設計。</div>
                     </div>
-                  ))}
-                </motion.div>
-              </motion.div>
-
-              <div className="relative min-h-[470px] overflow-hidden px-4 pb-8 pt-3 sm:px-8 lg:min-h-[760px] lg:px-10 lg:pb-10 lg:pt-8">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                  className="relative mx-auto mt-3 h-[430px] w-full max-w-[330px] rounded-[38px] bg-[#111] p-[10px] shadow-[0_40px_110px_rgba(0,0,0,0.22)] sm:h-[520px] sm:max-w-[370px] lg:mt-4 lg:h-[640px] lg:max-w-[400px]"
-                  style={{ transform: "perspective(1600px) rotateY(-10deg) rotateX(6deg)" }}
-                >
-                  <div className="relative h-full w-full overflow-hidden rounded-[30px] bg-gradient-to-b from-[#faf8f4] to-[#ece6de]">
-                    <div className="absolute left-1/2 top-3 z-20 h-6 w-24 -translate-x-1/2 rounded-full bg-black/90" />
-
-                    <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} className="absolute left-1/2 top-[72px] z-10 flex h-24 w-24 -translate-x-1/2 items-center justify-center rounded-[28px] border border-black/8 bg-white/92 shadow-[0_18px_46px_rgba(0,0,0,0.08)] sm:h-28 sm:w-28 overflow-hidden">
-                      <img src="/logo.png" alt="EN logo" className="h-full w-full object-contain p-3" />
-                    </motion.div>
-
-                    <div className="absolute inset-x-0 top-[188px] px-5 text-center sm:top-[225px]">
-                      <div className="text-[28px] font-semibold leading-[1.02] tracking-[-0.08em] sm:text-[34px]">
-                        AI × Marketing
-                        <br />
-                        × Creative
-                      </div>
-                      <p className="mx-auto mt-3 max-w-[250px] text-xs leading-6 text-black/55 sm:text-[13px]">
-                        クリエイティブと成果を両立する、スマホ起点のブランドサイト設計。
-                      </p>
-                    </div>
-
-                    <motion.div animate={{ y: [0, -8, 0], x: [0, 8, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} className="absolute left-2 top-[54px]">
-                      <FloatingTag>世界観を整理し、伝わる形へ。</FloatingTag>
-                    </motion.div>
-
-                    <motion.div animate={{ y: [0, 10, 0], x: [0, -6, 0] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }} className="absolute right-2 top-[176px] max-w-[148px]">
-                      <FloatingTag>作るだけで終わらず、売れる導線まで設計。</FloatingTag>
-                    </motion.div>
-
-                    <motion.div animate={{ y: [0, -12, 0], x: [0, 5, 0] }} transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }} className="absolute bottom-5 left-5">
-                      <FloatingTag>美しさと成果の両立。</FloatingTag>
-                    </motion.div>
                   </div>
-                </motion.div>
+                </div>
+
+                <div class="floating-tag tag-a"><small>EN</small><strong>世界観を整理し、伝わる形へ。</strong></div>
+                <div class="floating-tag tag-b"><small>EN</small><strong>作るだけで終わらず、売れる導線まで設計。</strong></div>
+                <div class="floating-tag tag-c"><small>EN</small><strong>美しさと成果の両立。</strong></div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </div>
+    </section>
 
-        <section id="about" className="px-4 py-3 sm:px-6 sm:py-5">
-          <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-            <Card className="rounded-[30px] border-black/8 bg-white/65 shadow-[0_20px_70px_rgba(0,0,0,0.06)] backdrop-blur-xl">
-              <CardContent className="p-6 sm:p-8">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45">About EN</div>
-                <h2 className="mt-3 text-[30px] font-semibold leading-[1.05] tracking-[-0.07em] sm:text-[42px]">
-                  伝わるだけでなく、
-                  <br />
-                  動かすためのデザインを。
-                </h2>
-                <p className="mt-4 text-sm leading-7 text-black/60 sm:text-[15px]">
-                  ENは、AI・マーケティング・クリエイティブを切り離さず、ブランドや事業を前進させるための設計を行います。デザインの美しさ、言葉の精度、売れる導線、そのすべてを一本の体験として整えることが私たちの仕事です。
-                </p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {[
-                    "AI Consulting",
-                    "Marketing",
-                    "Creative",
-                    "EC Direction",
-                  ].map((item) => (
-                    <span key={item} className="rounded-full border border-black/8 bg-white/80 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-black/65">
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="rounded-[30px] border-black/8 bg-white/65 shadow-[0_20px_70px_rgba(0,0,0,0.06)] backdrop-blur-xl">
-              <CardContent className="p-6 sm:p-8">
-                <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45">
-                  <BadgeCheck className="h-4 w-4" /> Position
-                </div>
-                <div className="mt-4 space-y-4">
-                  {[
-                    "AIを実務に落とし込む設計パートナー",
-                    "ブランドを伝わる形へ変えるクリエイティブ支援",
-                    "売上や営業成果に接続する導線改善",
-                  ].map((item, i) => (
-                    <div key={i} className="rounded-2xl border border-black/8 bg-white/75 p-4">
-                      <div className="text-sm leading-6 text-black/75">{item}</div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
-        <section id="services" className="px-4 py-5 sm:px-6 sm:py-7">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-4 sm:mb-6">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45">Services</div>
-              <h2 className="mt-2 text-[30px] font-semibold tracking-[-0.07em] sm:text-[44px]">事業を前に進める、4つの支援領域。</h2>
-            </div>
-
-            <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} variants={stagger} className="grid gap-4 md:grid-cols-2">
-              {services.map((service, index) => {
-                const Icon = service.icon;
-                return (
-                  <motion.div key={service.title} variants={fadeUp}>
-                    <Card className="group h-full overflow-hidden rounded-[30px] border-black/8 bg-white/65 shadow-[0_20px_70px_rgba(0,0,0,0.06)] backdrop-blur-xl transition duration-300 hover:-translate-y-1">
-                      <CardContent className="relative p-6 sm:p-8">
-                        <div className="absolute -right-7 -top-7 h-28 w-28 rounded-full bg-white/60 blur-2xl" />
-                        <div className="relative z-10">
-                          <div className="flex items-center justify-between">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-black/8 bg-white/85 shadow-sm">
-                              <Icon className="h-5 w-5" />
-                            </div>
-                            <div className="text-xs font-semibold tracking-[0.22em] text-black/35">0{index + 1}</div>
-                          </div>
-                          <h3 className="mt-5 text-[28px] font-semibold tracking-[-0.06em]">{service.title}</h3>
-                          <p className="mt-3 text-sm leading-7 text-black/60 sm:text-[15px]">{service.description}</p>
-                          <div className="mt-5 flex flex-wrap gap-2">
-                            {service.bullets.map((bullet) => (
-                              <span key={bullet} className="rounded-full border border-black/8 bg-white/80 px-3 py-2 text-[11px] font-semibold tracking-[0.18em] text-black/60">
-                                {bullet}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-          </div>
-        </section>
-
-        <section id="why" className="px-4 py-5 sm:px-6 sm:py-7">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-4 sm:mb-6">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45">Why EN</div>
-              <h2 className="mt-2 text-[30px] font-semibold tracking-[-0.07em] sm:text-[44px]">
-                クリエイティブ会社らしさと、
-                <br className="hidden sm:block" />
-                実務会社らしさの両立。
-              </h2>
-            </div>
-
-            <div className="grid gap-4 lg:grid-cols-3">
-              {strengths.map((item) => (
-                <Card key={item.title} className="rounded-[30px] border-black/8 bg-white/65 shadow-[0_20px_70px_rgba(0,0,0,0.06)] backdrop-blur-xl">
-                  <CardContent className="p-6 sm:p-8">
-                    <div className="text-4xl font-semibold tracking-[-0.08em] text-black/18">{item.stat}</div>
-                    <h3 className="mt-4 text-[24px] font-semibold leading-[1.08] tracking-[-0.06em]">{item.title}</h3>
-                    <p className="mt-3 text-sm leading-7 text-black/60 sm:text-[15px]">{item.text}</p>
-                  </CardContent>
-                </Card>
-              ))}
+    <section class="block" id="about">
+      <div class="wrap">
+        <div class="about-grid">
+          <div class="glass-card pad reveal">
+            <div class="kicker">About EN</div>
+            <h2 class="section-title">伝わるだけでなく、<br>動かすためのデザインを。</h2>
+            <p class="copy">ENは、AI・マーケティング・クリエイティブを切り離さず、ブランドや事業を前進させるための設計を行います。デザインの美しさ、言葉の精度、売れる導線。そのすべてを一本の体験として整えることが私たちの仕事です。</p>
+            <div class="pills">
+              <span class="pill">AI Consulting</span>
+              <span class="pill">Marketing</span>
+              <span class="pill">Creative</span>
+              <span class="pill">EC Direction</span>
             </div>
           </div>
-        </section>
 
-        <section id="case" className="px-4 py-5 sm:px-6 sm:py-7">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-4 sm:mb-6">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45">Case</div>
-              <h2 className="mt-2 text-[30px] font-semibold tracking-[-0.07em] sm:text-[44px]">
-                美しさだけで終わらない、
-                <br className="hidden sm:block" />
-                成果へつながる見せ方。
-              </h2>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              {cases.map((item) => (
-                <Card key={item.title} className="rounded-[30px] border-black/8 bg-white/65 shadow-[0_20px_70px_rgba(0,0,0,0.06)] backdrop-blur-xl">
-                  <CardContent className="p-6 sm:p-8">
-                    <div className="inline-flex rounded-full border border-black/8 bg-white/80 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-black/50">
-                      {item.label}
-                    </div>
-                    <h3 className="mt-4 text-[24px] font-semibold leading-[1.08] tracking-[-0.06em]">{item.title}</h3>
-                    <p className="mt-3 text-sm leading-7 text-black/60 sm:text-[15px]">{item.text}</p>
-                  </CardContent>
-                </Card>
-              ))}
+          <div class="glass-card pad reveal">
+            <div class="kicker">Position</div>
+            <div class="position-list">
+              <div class="position-item">AIを実務に落とし込む設計パートナー</div>
+              <div class="position-item">ブランドを伝わる形へ変えるクリエイティブ支援</div>
+              <div class="position-item">売上や営業成果に接続する導線改善</div>
             </div>
           </div>
-        </section>
+        </div>
+      </div>
+    </section>
 
-        <section id="company" className="px-4 py-5 sm:px-6 sm:py-7">
-          <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-[1.05fr_0.95fr]">
-            <Card className="rounded-[30px] border-black/8 bg-white/65 shadow-[0_20px_70px_rgba(0,0,0,0.06)] backdrop-blur-xl">
-              <CardContent className="p-6 sm:p-8">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45">Company</div>
-                <h2 className="mt-2 text-[30px] font-semibold tracking-[-0.07em] sm:text-[42px]">会社概要</h2>
+    <section class="block" id="services">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker">Services</div>
+          <h2 class="section-title">事業を前に進める、<br>4つの支援領域。</h2>
+        </div>
 
-                <div className="mt-6 space-y-4 text-sm text-black/75 sm:text-[15px]">
-                  <div className="flex gap-3 border-b border-black/8 pb-4">
-                    <Building2 className="mt-1 h-4 w-4 shrink-0 text-black/45" />
-                    <div>
-                      <div className="text-xs uppercase tracking-[0.2em] text-black/40">Company</div>
-                      <div className="mt-1 font-medium">合同会社EN</div>
-                    </div>
-                  </div>
-                  <div className="flex gap-3 border-b border-black/8 pb-4">
-                    <MapPin className="mt-1 h-4 w-4 shrink-0 text-black/45" />
-                    <div>
-                      <div className="text-xs uppercase tracking-[0.2em] text-black/40">Location</div>
-                      <div className="mt-1 font-medium">大阪府高石市取石一丁目13番2号401</div>
-                    </div>
-                  </div>
-                  <div className="flex gap-3 border-b border-black/8 pb-4">
-                    <Layers3 className="mt-1 h-4 w-4 shrink-0 text-black/45" />
-                    <div>
-                      <div className="text-xs uppercase tracking-[0.2em] text-black/40">Business</div>
-                      <div className="mt-1 font-medium">AIコンサルティング / マーケティング支援 / ECディレクション / クリエイティブ制作</div>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <BadgeCheck className="mt-1 h-4 w-4 shrink-0 text-black/45" />
-                    <div>
-                      <div className="text-xs uppercase tracking-[0.2em] text-black/40">Representative</div>
-                      <div className="mt-1 font-medium">代表社員 遠藤菜摘</div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        <div class="services-grid">
+          <article class="glass-card pad service-card reveal">
+            <div class="service-top"><div class="service-icon">AI</div><div class="service-num">01</div></div>
+            <h3>AI Consulting</h3>
+            <p class="card-copy">AIを導入するだけで終わらせず、業務フロー、運用、成果導線までを整理して実装します。</p>
+            <div class="service-bullets"><span>業務整理</span><span>AI活用設計</span><span>運用ルール構築</span></div>
+          </article>
 
-            <Card className="rounded-[30px] border-black/8 bg-white/65 shadow-[0_20px_70px_rgba(0,0,0,0.06)] backdrop-blur-xl">
-              <CardContent className="p-6 sm:p-8">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45">Statement</div>
-                <h3 className="mt-3 text-[26px] font-semibold leading-[1.06] tracking-[-0.06em]">
-                  AI × Marketing × Creative を、
-                  ひとつの成果導線に。
-                </h3>
-                <p className="mt-4 text-sm leading-7 text-black/60 sm:text-[15px]">
-                  ENは、ブランドや事業の魅力を整理し、営業・販促・販売に接続するための設計を行います。クリエイティブな感性と実務的な視点の両方から、事業を前に進める支援を行います。
-                </p>
-                <div className="mt-6 rounded-[24px] border border-black/8 bg-white/75 p-5">
-                  <div className="text-xs uppercase tracking-[0.2em] text-black/40">Domain</div>
-                  <div className="mt-2 flex items-center gap-2 text-sm font-medium text-black/80">
-                    en-office.co.jp <ArrowUpRight className="h-4 w-4" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          <article class="glass-card pad service-card reveal">
+            <div class="service-top"><div class="service-icon">SNS</div><div class="service-num">02</div></div>
+            <h3>Marketing</h3>
+            <p class="card-copy">ブランド戦略、販促設計、SNS・広告・導線改善まで、一気通貫で整えます。</p>
+            <div class="service-bullets"><span>戦略立案</span><span>導線設計</span><span>販促改善</span></div>
+          </article>
+
+          <article class="glass-card pad service-card reveal">
+            <div class="service-top"><div class="service-icon">LP</div><div class="service-num">03</div></div>
+            <h3>Creative</h3>
+            <p class="card-copy">LP、提案資料、コピー、世界観設計まで、売れる表現に落とし込んで制作します。</p>
+            <div class="service-bullets"><span>LP制作</span><span>資料制作</span><span>コピー開発</span></div>
+          </article>
+
+          <article class="glass-card pad service-card reveal">
+            <div class="service-top"><div class="service-icon">EC</div><div class="service-num">04</div></div>
+            <h3>EC Direction</h3>
+            <p class="card-copy">商品企画、見せ方、販売設計を整理し、ECやD2Cの立ち上げと改善を支援します。</p>
+            <div class="service-bullets"><span>商品企画</span><span>販売設計</span><span>改善運用</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="why">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker">Why EN</div>
+          <h2 class="section-title">クリエイティブ会社らしさと、<br>実務会社らしさの両立。</h2>
+        </div>
+
+        <div class="strengths-grid">
+          <article class="glass-card pad strength-card reveal">
+            <div class="strength-num">01</div>
+            <h3>AI × MARKETING × CREATIVE</h3>
+            <p class="card-copy">領域を分断せず、戦略から制作、運用までを一本の線でつなぎます。</p>
+          </article>
+
+          <article class="glass-card pad strength-card reveal">
+            <div class="strength-num">02</div>
+            <h3>SMARTPHONE FIRST</h3>
+            <p class="card-copy">最初にスマホで美しく伝わることを前提に、UI・導線・印象を設計します。</p>
+          </article>
+
+          <article class="glass-card pad strength-card reveal">
+            <div class="strength-num">03</div>
+            <h3>RESULT DRIVEN</h3>
+            <p class="card-copy">作るだけで終わらず、営業・販促・販売成果に接続することを重視します。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="case">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker">Case</div>
+          <h2 class="section-title">美しさだけで終わらない、<br>成果へつながる見せ方。</h2>
+        </div>
+
+        <div class="case-grid">
+          <article class="glass-card pad case-card reveal">
+            <div class="case-label">Brand Design</div>
+            <h3>ブランドの魅力を、伝わる形に翻訳する。</h3>
+            <p class="card-copy">世界観、言葉、見せ方を整理し、顧客に届くブランド体験へ落とし込みます。</p>
+          </article>
+
+          <article class="glass-card pad case-card reveal">
+            <div class="case-label">Sales Support</div>
+            <h3>営業や提案を、勝てる見せ方に変える。</h3>
+            <p class="card-copy">提案資料、LP、導線、比較のされ方まで含めて、売れる営業環境を整えます。</p>
+          </article>
+
+          <article class="glass-card pad case-card reveal">
+            <div class="case-label">Creative Direction</div>
+            <h3>美しさと成果の両立を設計する。</h3>
+            <p class="card-copy">ただおしゃれなだけでなく、行動を生むクリエイティブに仕上げます。</p>
+          </article>
+
+          <article class="glass-card pad case-card reveal">
+            <div class="case-label">EC / D2C</div>
+            <h3>商品を、選ばれる状態にする。</h3>
+            <p class="card-copy">売り方、見せ方、価格の伝え方を整理し、購入される流れをデザインします。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="company">
+      <div class="wrap">
+        <div class="company-grid">
+          <div class="glass-card pad reveal">
+            <div class="kicker">Company</div>
+            <h2 class="section-title">会社概要</h2>
+            <div class="company-list">
+              <div class="company-row"><div class="icon-box">会</div><div><small>Company</small><strong>合同会社EN</strong></div></div>
+              <div class="company-row"><div class="icon-box">所</div><div><small>Location</small><strong>大阪府高石市取石一丁目13番2号401</strong></div></div>
+              <div class="company-row"><div class="icon-box">業</div><div><small>Business</small><strong>AIコンサルティング / マーケティング支援 / ECディレクション / クリエイティブ制作</strong></div></div>
+              <div class="company-row"><div class="icon-box">代</div><div><small>Representative</small><strong>代表社員 遠藤菜摘</strong></div></div>
+            </div>
           </div>
-        </section>
 
-        <section id="contact" className="px-4 py-6 sm:px-6 sm:py-8">
-          <div className="mx-auto max-w-6xl">
-            <Card className="overflow-hidden rounded-[34px] border-black/8 bg-[#111] text-white shadow-[0_24px_90px_rgba(0,0,0,0.18)]">
-              <CardContent className="relative p-6 sm:p-10">
-                <div className="absolute -right-14 -top-14 h-44 w-44 rounded-full bg-white/10 blur-3xl" />
-                <div className="absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
-
-                <div className="relative z-10 text-center">
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/50">Contact</div>
-                  <h2 className="mt-3 text-[34px] font-semibold leading-[1.02] tracking-[-0.08em] sm:text-[52px]">ご相談・お問い合わせ</h2>
-                  <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/68 sm:text-[15px]">
-                    AI活用、マーケティング支援、クリエイティブ制作、ECディレクションなど、事業やブランドに関するご相談を承っています。
-                  </p>
-
-                  <div className="mt-6 flex flex-col items-center gap-3">
-                    <a href="mailto:info@en-office.co.jp" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-black shadow-[0_16px_40px_rgba(255,255,255,0.15)] transition hover:-translate-y-0.5">
-                      <Mail className="h-4 w-4" /> info@en-office.co.jp
-                    </a>
-                    <div className="text-xs uppercase tracking-[0.2em] text-white/40">en-office.co.jp</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          <div class="glass-card pad reveal">
+            <div class="kicker">Statement</div>
+            <h3 style="margin-top:8px">AI × Marketing × Creative を、<br>ひとつの成果導線に。</h3>
+            <p class="card-copy">ENは、ブランドや事業の魅力を整理し、営業・販促・販売に接続するための設計を行います。クリエイティブな感性と実務的な視点の両方から、事業を前に進める支援を行います。</p>
+            <div class="statement-box statement"><small>Domain</small><strong>en-office.co.jp</strong></div>
           </div>
-        </section>
-      </main>
+        </div>
+      </div>
+    </section>
 
-      <footer className="relative z-10 px-4 pb-10 pt-3 text-center text-xs uppercase tracking-[0.2em] text-black/38 sm:px-6">© EN LLC</footer>
-    </div>
-  );
-}
+    <section class="block" id="contact" style="padding-bottom:24px">
+      <div class="wrap">
+        <div class="contact-shell reveal">
+          <div class="contact-inner">
+            <div class="kicker" style="color:rgba(255,255,255,0.46)">Contact</div>
+            <div class="contact-title">ご相談・お問い合わせ</div>
+            <p class="contact-copy">AI活用、マーケティング支援、クリエイティブ制作、ECディレクションなど、事業やブランドに関するご相談を承っています。</p>
+            <a href="mailto:info@en-office.co.jp" class="mail-btn">info@en-office.co.jp</a>
+            <div class="domain-note">en-office.co.jp</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">© EN LLC</footer>
+
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileLinks = mobileNav.querySelectorAll('a');
+
+    menuBtn.addEventListener('click', () => {
+      const active = menuBtn.classList.toggle('active');
+      mobileNav.classList.toggle('open');
+      menuBtn.setAttribute('aria-expanded', active ? 'true' : 'false');
+    });
+
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        menuBtn.classList.remove('active');
+        mobileNav.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('show');
+      });
+    }, { threshold: 0.14 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
