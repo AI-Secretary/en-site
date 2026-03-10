@@ -1,17 +1,524 @@
-<h1>合同会社EN</h1>
+import React, { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import {
+  ArrowUpRight,
+  Bot,
+  ChevronRight,
+  Mail,
+  MapPin,
+  Megaphone,
+  Menu,
+  PenTool,
+  Sparkles,
+  TrendingUp,
+  X,
+  Layers3,
+  Building2,
+  BadgeCheck,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
-<h2>事業内容</h2>
-・ブランディング支援<br>
-・マーケティング支援<br>
-・商品企画 / OEM支援<br>
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+  },
+};
 
-<h2>会社概要</h2>
-会社名：合同会社EN<br>
-代表：遠藤菜摘<br>
-所在地：登記住所<br>
+const stagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.12 } },
+};
 
-<h2>主要取引先</h2>
-山内株式会社<br>
+const services = [
+  {
+    icon: Bot,
+    title: "AI Consulting",
+    description:
+      "AIを導入するだけで終わらせず、業務フロー、運用、成果導線までを整理して実装します。",
+    bullets: ["業務整理", "AI活用設計", "運用ルール構築"],
+  },
+  {
+    icon: Megaphone,
+    title: "Marketing",
+    description:
+      "ブランド戦略、販促設計、SNS・広告・導線改善まで、一気通貫で整えます。",
+    bullets: ["戦略立案", "導線設計", "販促改善"],
+  },
+  {
+    icon: PenTool,
+    title: "Creative",
+    description:
+      "LP、提案資料、コピー、世界観設計まで、売れる表現に落とし込んで制作します。",
+    bullets: ["LP制作", "資料制作", "コピー開発"],
+  },
+  {
+    icon: TrendingUp,
+    title: "EC Direction",
+    description:
+      "商品企画、見せ方、販売設計を整理し、ECやD2Cの立ち上げと改善を支援します。",
+    bullets: ["商品企画", "販売設計", "改善運用"],
+  },
+];
 
-<h2>お問い合わせ</h2>
-info@あなたのドメイン
+const strengths = [
+  {
+    title: "AI × MARKETING × CREATIVE",
+    text: "領域を分断せず、戦略から制作、運用までを一本の線でつなぎます。",
+    stat: "01",
+  },
+  {
+    title: "SMARTPHONE FIRST",
+    text: "最初にスマホで美しく伝わることを前提に、UI・導線・印象を設計します。",
+    stat: "02",
+  },
+  {
+    title: "RESULT DRIVEN",
+    text: "作るだけで終わらず、営業・販促・販売成果に接続することを重視します。",
+    stat: "03",
+  },
+];
+
+const cases = [
+  {
+    label: "Brand Design",
+    title: "ブランドの魅力を、伝わる形に翻訳する。",
+    text: "世界観、言葉、見せ方を整理し、顧客に届くブランド体験へ落とし込みます。",
+  },
+  {
+    label: "Sales Support",
+    title: "営業や提案を、勝てる見せ方に変える。",
+    text: "提案資料、LP、導線、比較のされ方まで含めて、売れる営業環境を整えます。",
+  },
+  {
+    label: "Creative Direction",
+    title: "美しさと成果の両立を設計する。",
+    text: "ただおしゃれなだけでなく、行動を生むクリエイティブに仕上げます。",
+  },
+  {
+    label: "EC / D2C",
+    title: "商品を、選ばれる状態にする。",
+    text: "売り方、見せ方、価格の伝え方を整理し、購入される流れをデザインします。",
+  },
+];
+
+const navItems = [
+  { label: "About", href: "#about" },
+  { label: "Services", href: "#services" },
+  { label: "Why EN", href: "#why" },
+  { label: "Case", href: "#case" },
+  { label: "Company", href: "#company" },
+  { label: "Contact", href: "#contact" },
+];
+
+function GlassOrb({ className }: { className?: string }) {
+  return (
+    <div
+      className={`absolute rounded-full blur-3xl opacity-60 ${className || ""}`}
+      style={{
+        background:
+          "radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.25) 35%, rgba(255,255,255,0) 70%)",
+      }}
+    />
+  );
+}
+
+function FloatingTag({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`rounded-2xl border border-black/5 bg-white/80 px-3 py-2 shadow-[0_18px_40px_rgba(0,0,0,0.08)] backdrop-blur-md ${className}`}>
+      <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-black/45">EN</div>
+      <div className="mt-1 text-xs font-medium leading-5 text-black/80">{children}</div>
+    </div>
+  );
+}
+
+export default function ENMobileLandingPage() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const nav = useMemo(() => navItems, []);
+
+  return (
+    <div className="min-h-screen overflow-x-hidden bg-[#f4f1eb] text-[#101010]">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <GlassOrb className="-right-16 -top-12 h-64 w-64" />
+        <GlassOrb className="left-[-100px] top-[32%] h-72 w-72" />
+        <motion.div
+          animate={{ y: [0, -18, 0], x: [0, 10, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-[-80px] right-[4%] h-72 w-72 rounded-full blur-3xl opacity-45"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.2) 35%, rgba(255,255,255,0) 72%)",
+          }}
+        />
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{ backgroundImage: "radial-gradient(#000 0.55px, transparent 0.55px)", backgroundSize: "20px 20px" }}
+        />
+      </div>
+
+      <header className="sticky top-0 z-50 border-b border-black/5 bg-[#f4f1eb]/70 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+          <a href="#top" className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-black/10 bg-white/85 shadow-sm overflow-hidden">
+              <img src="/logo.png" alt="EN logo" className="h-full w-full object-contain p-2" />
+            </div>
+            <div>
+              <div className="text-sm font-semibold tracking-[0.22em]">EN</div>
+              <div className="text-[10px] uppercase tracking-[0.24em] text-black/50">AI × Marketing × Creative</div>
+            </div>
+          </a>
+
+          <nav className="hidden items-center gap-1 lg:flex">
+            {nav.map((item) => (
+              <a key={item.href} href={item.href} className="rounded-xl px-4 py-2 text-sm font-medium text-black/70 transition hover:bg-white/70 hover:text-black">
+                {item.label}
+              </a>
+            ))}
+          </nav>
+
+          <button onClick={() => setMenuOpen((v) => !v)} className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-black/10 bg-white/85 shadow-sm lg:hidden" aria-label="menu">
+            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+
+        {menuOpen && (
+          <div className="border-t border-black/5 px-4 pb-4 pt-3 lg:hidden">
+            <div className="mx-auto grid max-w-6xl gap-2">
+              {nav.map((item) => (
+                <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className="rounded-2xl border border-black/8 bg-white/80 px-4 py-3 text-sm font-medium shadow-sm">
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </header>
+
+      <main id="top" className="relative z-10">
+        <section className="px-4 pb-8 pt-5 sm:px-6 sm:pt-8">
+          <div className="mx-auto max-w-6xl overflow-hidden rounded-[34px] border border-black/8 bg-white/55 shadow-[0_24px_80px_rgba(0,0,0,0.08)] backdrop-blur-xl">
+            <div className="grid lg:grid-cols-2">
+              <motion.div initial="hidden" animate="show" variants={stagger} className="relative px-5 pb-7 pt-7 sm:px-8 sm:pb-10 sm:pt-10 lg:px-12 lg:py-14">
+                <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-black/8 bg-white/85 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-black/75">
+                  <Sparkles className="h-3.5 w-3.5" /> Growth Design Partner
+                </motion.div>
+
+                <motion.h1 variants={fadeUp} className="mt-5 text-[42px] font-semibold leading-[0.92] tracking-[-0.085em] sm:text-[58px] lg:text-[78px]">
+                  作るだけで
+                  <br />
+                  終わらせない。
+                  <br />
+                  売れるまで
+                  <span className="italic text-black/75">設計する。</span>
+                </motion.h1>
+
+                <motion.p variants={fadeUp} className="mt-5 max-w-xl text-sm leading-7 text-black/60 sm:text-[15px]">
+                  合同会社ENは、AIコンサルティング、マーケティング支援、ECディレクション、クリエイティブ制作を横断し、企業やブランドの成長導線を設計するパートナーです。美しさだけでなく、成果に接続する設計を重視します。
+                </motion.p>
+
+                <motion.div variants={fadeUp} className="mt-6 flex flex-col gap-3 sm:flex-row">
+                  <Button asChild className="h-12 rounded-2xl bg-black px-5 text-white hover:bg-black/90">
+                    <a href="#contact">
+                      お問い合わせ <ChevronRight className="ml-1 h-4 w-4" />
+                    </a>
+                  </Button>
+                  <Button asChild variant="outline" className="h-12 rounded-2xl border-black/10 bg-white/75 px-5 hover:bg-white">
+                    <a href="#services">サービスを見る</a>
+                  </Button>
+                </motion.div>
+
+                <motion.div variants={fadeUp} className="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
+                  {[
+                    { value: "AI", label: "Consulting" },
+                    { value: "SNS", label: "Marketing" },
+                    { value: "LP", label: "Creative" },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-2xl border border-black/8 bg-white/70 px-3 py-4 text-center backdrop-blur-sm">
+                      <div className="text-xl font-semibold tracking-[-0.06em] sm:text-2xl">{item.value}</div>
+                      <div className="mt-1 text-[10px] uppercase tracking-[0.18em] text-black/45 sm:text-[11px]">{item.label}</div>
+                    </div>
+                  ))}
+                </motion.div>
+              </motion.div>
+
+              <div className="relative min-h-[470px] overflow-hidden px-4 pb-8 pt-3 sm:px-8 lg:min-h-[760px] lg:px-10 lg:pb-10 lg:pt-8">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                  className="relative mx-auto mt-3 h-[430px] w-full max-w-[330px] rounded-[38px] bg-[#111] p-[10px] shadow-[0_40px_110px_rgba(0,0,0,0.22)] sm:h-[520px] sm:max-w-[370px] lg:mt-4 lg:h-[640px] lg:max-w-[400px]"
+                  style={{ transform: "perspective(1600px) rotateY(-10deg) rotateX(6deg)" }}
+                >
+                  <div className="relative h-full w-full overflow-hidden rounded-[30px] bg-gradient-to-b from-[#faf8f4] to-[#ece6de]">
+                    <div className="absolute left-1/2 top-3 z-20 h-6 w-24 -translate-x-1/2 rounded-full bg-black/90" />
+
+                    <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} className="absolute left-1/2 top-[72px] z-10 flex h-24 w-24 -translate-x-1/2 items-center justify-center rounded-[28px] border border-black/8 bg-white/92 shadow-[0_18px_46px_rgba(0,0,0,0.08)] sm:h-28 sm:w-28 overflow-hidden">
+                      <img src="/logo.png" alt="EN logo" className="h-full w-full object-contain p-3" />
+                    </motion.div>
+
+                    <div className="absolute inset-x-0 top-[188px] px-5 text-center sm:top-[225px]">
+                      <div className="text-[28px] font-semibold leading-[1.02] tracking-[-0.08em] sm:text-[34px]">
+                        AI × Marketing
+                        <br />
+                        × Creative
+                      </div>
+                      <p className="mx-auto mt-3 max-w-[250px] text-xs leading-6 text-black/55 sm:text-[13px]">
+                        クリエイティブと成果を両立する、スマホ起点のブランドサイト設計。
+                      </p>
+                    </div>
+
+                    <motion.div animate={{ y: [0, -8, 0], x: [0, 8, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} className="absolute left-2 top-[54px]">
+                      <FloatingTag>世界観を整理し、伝わる形へ。</FloatingTag>
+                    </motion.div>
+
+                    <motion.div animate={{ y: [0, 10, 0], x: [0, -6, 0] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }} className="absolute right-2 top-[176px] max-w-[148px]">
+                      <FloatingTag>作るだけで終わらず、売れる導線まで設計。</FloatingTag>
+                    </motion.div>
+
+                    <motion.div animate={{ y: [0, -12, 0], x: [0, 5, 0] }} transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }} className="absolute bottom-5 left-5">
+                      <FloatingTag>美しさと成果の両立。</FloatingTag>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="about" className="px-4 py-3 sm:px-6 sm:py-5">
+          <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+            <Card className="rounded-[30px] border-black/8 bg-white/65 shadow-[0_20px_70px_rgba(0,0,0,0.06)] backdrop-blur-xl">
+              <CardContent className="p-6 sm:p-8">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45">About EN</div>
+                <h2 className="mt-3 text-[30px] font-semibold leading-[1.05] tracking-[-0.07em] sm:text-[42px]">
+                  伝わるだけでなく、
+                  <br />
+                  動かすためのデザインを。
+                </h2>
+                <p className="mt-4 text-sm leading-7 text-black/60 sm:text-[15px]">
+                  ENは、AI・マーケティング・クリエイティブを切り離さず、ブランドや事業を前進させるための設計を行います。デザインの美しさ、言葉の精度、売れる導線、そのすべてを一本の体験として整えることが私たちの仕事です。
+                </p>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {[
+                    "AI Consulting",
+                    "Marketing",
+                    "Creative",
+                    "EC Direction",
+                  ].map((item) => (
+                    <span key={item} className="rounded-full border border-black/8 bg-white/80 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-black/65">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-[30px] border-black/8 bg-white/65 shadow-[0_20px_70px_rgba(0,0,0,0.06)] backdrop-blur-xl">
+              <CardContent className="p-6 sm:p-8">
+                <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45">
+                  <BadgeCheck className="h-4 w-4" /> Position
+                </div>
+                <div className="mt-4 space-y-4">
+                  {[
+                    "AIを実務に落とし込む設計パートナー",
+                    "ブランドを伝わる形へ変えるクリエイティブ支援",
+                    "売上や営業成果に接続する導線改善",
+                  ].map((item, i) => (
+                    <div key={i} className="rounded-2xl border border-black/8 bg-white/75 p-4">
+                      <div className="text-sm leading-6 text-black/75">{item}</div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        <section id="services" className="px-4 py-5 sm:px-6 sm:py-7">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-4 sm:mb-6">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45">Services</div>
+              <h2 className="mt-2 text-[30px] font-semibold tracking-[-0.07em] sm:text-[44px]">事業を前に進める、4つの支援領域。</h2>
+            </div>
+
+            <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} variants={stagger} className="grid gap-4 md:grid-cols-2">
+              {services.map((service, index) => {
+                const Icon = service.icon;
+                return (
+                  <motion.div key={service.title} variants={fadeUp}>
+                    <Card className="group h-full overflow-hidden rounded-[30px] border-black/8 bg-white/65 shadow-[0_20px_70px_rgba(0,0,0,0.06)] backdrop-blur-xl transition duration-300 hover:-translate-y-1">
+                      <CardContent className="relative p-6 sm:p-8">
+                        <div className="absolute -right-7 -top-7 h-28 w-28 rounded-full bg-white/60 blur-2xl" />
+                        <div className="relative z-10">
+                          <div className="flex items-center justify-between">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-black/8 bg-white/85 shadow-sm">
+                              <Icon className="h-5 w-5" />
+                            </div>
+                            <div className="text-xs font-semibold tracking-[0.22em] text-black/35">0{index + 1}</div>
+                          </div>
+                          <h3 className="mt-5 text-[28px] font-semibold tracking-[-0.06em]">{service.title}</h3>
+                          <p className="mt-3 text-sm leading-7 text-black/60 sm:text-[15px]">{service.description}</p>
+                          <div className="mt-5 flex flex-wrap gap-2">
+                            {service.bullets.map((bullet) => (
+                              <span key={bullet} className="rounded-full border border-black/8 bg-white/80 px-3 py-2 text-[11px] font-semibold tracking-[0.18em] text-black/60">
+                                {bullet}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          </div>
+        </section>
+
+        <section id="why" className="px-4 py-5 sm:px-6 sm:py-7">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-4 sm:mb-6">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45">Why EN</div>
+              <h2 className="mt-2 text-[30px] font-semibold tracking-[-0.07em] sm:text-[44px]">
+                クリエイティブ会社らしさと、
+                <br className="hidden sm:block" />
+                実務会社らしさの両立。
+              </h2>
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-3">
+              {strengths.map((item) => (
+                <Card key={item.title} className="rounded-[30px] border-black/8 bg-white/65 shadow-[0_20px_70px_rgba(0,0,0,0.06)] backdrop-blur-xl">
+                  <CardContent className="p-6 sm:p-8">
+                    <div className="text-4xl font-semibold tracking-[-0.08em] text-black/18">{item.stat}</div>
+                    <h3 className="mt-4 text-[24px] font-semibold leading-[1.08] tracking-[-0.06em]">{item.title}</h3>
+                    <p className="mt-3 text-sm leading-7 text-black/60 sm:text-[15px]">{item.text}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="case" className="px-4 py-5 sm:px-6 sm:py-7">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-4 sm:mb-6">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45">Case</div>
+              <h2 className="mt-2 text-[30px] font-semibold tracking-[-0.07em] sm:text-[44px]">
+                美しさだけで終わらない、
+                <br className="hidden sm:block" />
+                成果へつながる見せ方。
+              </h2>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              {cases.map((item) => (
+                <Card key={item.title} className="rounded-[30px] border-black/8 bg-white/65 shadow-[0_20px_70px_rgba(0,0,0,0.06)] backdrop-blur-xl">
+                  <CardContent className="p-6 sm:p-8">
+                    <div className="inline-flex rounded-full border border-black/8 bg-white/80 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-black/50">
+                      {item.label}
+                    </div>
+                    <h3 className="mt-4 text-[24px] font-semibold leading-[1.08] tracking-[-0.06em]">{item.title}</h3>
+                    <p className="mt-3 text-sm leading-7 text-black/60 sm:text-[15px]">{item.text}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="company" className="px-4 py-5 sm:px-6 sm:py-7">
+          <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+            <Card className="rounded-[30px] border-black/8 bg-white/65 shadow-[0_20px_70px_rgba(0,0,0,0.06)] backdrop-blur-xl">
+              <CardContent className="p-6 sm:p-8">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45">Company</div>
+                <h2 className="mt-2 text-[30px] font-semibold tracking-[-0.07em] sm:text-[42px]">会社概要</h2>
+
+                <div className="mt-6 space-y-4 text-sm text-black/75 sm:text-[15px]">
+                  <div className="flex gap-3 border-b border-black/8 pb-4">
+                    <Building2 className="mt-1 h-4 w-4 shrink-0 text-black/45" />
+                    <div>
+                      <div className="text-xs uppercase tracking-[0.2em] text-black/40">Company</div>
+                      <div className="mt-1 font-medium">合同会社EN</div>
+                    </div>
+                  </div>
+                  <div className="flex gap-3 border-b border-black/8 pb-4">
+                    <MapPin className="mt-1 h-4 w-4 shrink-0 text-black/45" />
+                    <div>
+                      <div className="text-xs uppercase tracking-[0.2em] text-black/40">Location</div>
+                      <div className="mt-1 font-medium">大阪府高石市取石一丁目13番2号401</div>
+                    </div>
+                  </div>
+                  <div className="flex gap-3 border-b border-black/8 pb-4">
+                    <Layers3 className="mt-1 h-4 w-4 shrink-0 text-black/45" />
+                    <div>
+                      <div className="text-xs uppercase tracking-[0.2em] text-black/40">Business</div>
+                      <div className="mt-1 font-medium">AIコンサルティング / マーケティング支援 / ECディレクション / クリエイティブ制作</div>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <BadgeCheck className="mt-1 h-4 w-4 shrink-0 text-black/45" />
+                    <div>
+                      <div className="text-xs uppercase tracking-[0.2em] text-black/40">Representative</div>
+                      <div className="mt-1 font-medium">代表社員 遠藤菜摘</div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-[30px] border-black/8 bg-white/65 shadow-[0_20px_70px_rgba(0,0,0,0.06)] backdrop-blur-xl">
+              <CardContent className="p-6 sm:p-8">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45">Statement</div>
+                <h3 className="mt-3 text-[26px] font-semibold leading-[1.06] tracking-[-0.06em]">
+                  AI × Marketing × Creative を、
+                  ひとつの成果導線に。
+                </h3>
+                <p className="mt-4 text-sm leading-7 text-black/60 sm:text-[15px]">
+                  ENは、ブランドや事業の魅力を整理し、営業・販促・販売に接続するための設計を行います。クリエイティブな感性と実務的な視点の両方から、事業を前に進める支援を行います。
+                </p>
+                <div className="mt-6 rounded-[24px] border border-black/8 bg-white/75 p-5">
+                  <div className="text-xs uppercase tracking-[0.2em] text-black/40">Domain</div>
+                  <div className="mt-2 flex items-center gap-2 text-sm font-medium text-black/80">
+                    en-office.co.jp <ArrowUpRight className="h-4 w-4" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        <section id="contact" className="px-4 py-6 sm:px-6 sm:py-8">
+          <div className="mx-auto max-w-6xl">
+            <Card className="overflow-hidden rounded-[34px] border-black/8 bg-[#111] text-white shadow-[0_24px_90px_rgba(0,0,0,0.18)]">
+              <CardContent className="relative p-6 sm:p-10">
+                <div className="absolute -right-14 -top-14 h-44 w-44 rounded-full bg-white/10 blur-3xl" />
+                <div className="absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
+
+                <div className="relative z-10 text-center">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/50">Contact</div>
+                  <h2 className="mt-3 text-[34px] font-semibold leading-[1.02] tracking-[-0.08em] sm:text-[52px]">ご相談・お問い合わせ</h2>
+                  <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/68 sm:text-[15px]">
+                    AI活用、マーケティング支援、クリエイティブ制作、ECディレクションなど、事業やブランドに関するご相談を承っています。
+                  </p>
+
+                  <div className="mt-6 flex flex-col items-center gap-3">
+                    <a href="mailto:info@en-office.co.jp" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-black shadow-[0_16px_40px_rgba(255,255,255,0.15)] transition hover:-translate-y-0.5">
+                      <Mail className="h-4 w-4" /> info@en-office.co.jp
+                    </a>
+                    <div className="text-xs uppercase tracking-[0.2em] text-white/40">en-office.co.jp</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      </main>
+
+      <footer className="relative z-10 px-4 pb-10 pt-3 text-center text-xs uppercase tracking-[0.2em] text-black/38 sm:px-6">© EN LLC</footer>
+    </div>
+  );
+}
