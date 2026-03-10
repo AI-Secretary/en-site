@@ -14,7 +14,7 @@
       --bg: #f3efe8;
       --bg2: #ebe4da;
       --surface: rgba(255,255,255,0.72);
-      --surface-strong: rgba(255,255,255,0.9);
+      --surface-strong: rgba(255,255,255,0.92);
       --text: #0f0f10;
       --muted: rgba(15,15,16,0.58);
       --line: rgba(15,15,16,0.08);
@@ -52,8 +52,9 @@
       z-index: 0;
     }
 
-    img { display: block; max-width: 100%; }
+    img { max-width: 100%; display: block; }
     a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
 
     .wrap {
       width: min(calc(100% - 28px), var(--max));
@@ -71,13 +72,18 @@
       opacity: .62;
       mix-blend-mode: screen;
       background: radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(255,255,255,.35) 38%, rgba(255,255,255,0) 72%);
+      will-change: transform;
     }
     .orb.a { width: 280px; height: 280px; top: -90px; right: -70px; animation: floatA 13s ease-in-out infinite; }
     .orb.b { width: 340px; height: 340px; left: -140px; top: 28%; animation: floatB 17s ease-in-out infinite; }
     .orb.c { width: 280px; height: 280px; right: 2%; bottom: -100px; animation: floatC 12s ease-in-out infinite; }
+    .orb.d { width: 180px; height: 180px; left: 8%; bottom: 22%; animation: floatD 11s ease-in-out infinite; opacity: .5; }
+    .orb.e { width: 220px; height: 220px; right: 12%; top: 48%; animation: floatE 16s ease-in-out infinite; opacity: .42; }
     @keyframes floatA { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-12px,18px)} }
     @keyframes floatB { 0%,100%{transform:translate(0,0)} 50%{transform:translate(18px,-10px)} }
     @keyframes floatC { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-10px,-18px)} }
+    @keyframes floatD { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(10px,-12px) scale(1.04)} }
+    @keyframes floatE { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-12px,14px)} }
 
     .loading {
       position: fixed;
@@ -288,7 +294,9 @@
         radial-gradient(circle at 100% 0%, rgba(255,255,255,.96), transparent 24%),
         linear-gradient(180deg, rgba(255,255,255,.74), rgba(255,255,255,.56));
       box-shadow: var(--shadow);
+      animation: shellFloat 10s ease-in-out infinite;
     }
+    @keyframes shellFloat { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-3px);} }
     .hero-grid { display: grid; }
     .hero-copy {
       padding: 28px 20px 20px;
@@ -322,8 +330,8 @@
     h1 {
       margin: 18px 0 0;
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(54px, 15vw, 110px);
-      line-height: .86;
+      font-size: clamp(46px, 13.2vw, 96px);
+      line-height: .88;
       letter-spacing: -.08em;
       font-weight: 700;
     }
@@ -458,10 +466,11 @@
       place-items: center;
       padding: 12px;
       overflow: hidden;
-      animation: bob 5.6s ease-in-out infinite;
+      animation: bob 5.6s ease-in-out infinite, halo 6.2s ease-in-out infinite;
     }
     .screen-logo img { width: 100%; height: 100%; object-fit: contain; }
     @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes halo { 0%,100%{ box-shadow: 0 18px 46px rgba(0,0,0,0.08), 0 0 0 0 rgba(255,255,255,0);} 50%{ box-shadow: 0 24px 56px rgba(0,0,0,0.12), 0 0 0 16px rgba(255,255,255,0.12);} }
     .screen-title {
       margin: 18px auto 0;
       text-align: center;
@@ -489,6 +498,7 @@
       border: 1px solid rgba(15,15,16,.06);
       box-shadow: 0 18px 40px rgba(0,0,0,.08);
       backdrop-filter: blur(12px);
+      animation: softFloat 7s ease-in-out infinite;
     }
     .floating-tag small {
       display: block;
@@ -505,12 +515,13 @@
       line-height: 1.6;
       color: rgba(15,15,16,.84);
     }
-    .tag-a { left: 0; top: 58px; animation: driftTagA 8s ease-in-out infinite; }
-    .tag-b { right: 0; top: 196px; animation: driftTagB 7s ease-in-out infinite; }
-    .tag-c { left: 22px; bottom: 16px; animation: driftTagC 9s ease-in-out infinite; }
+    .tag-a { left: 0; top: 58px; animation: driftTagA 8s ease-in-out infinite, softFloat 7s ease-in-out infinite; }
+    .tag-b { right: 0; top: 196px; animation: driftTagB 7s ease-in-out infinite, softFloat 7.8s ease-in-out infinite; }
+    .tag-c { left: 22px; bottom: 16px; animation: driftTagC 9s ease-in-out infinite, softFloat 8.4s ease-in-out infinite; }
     @keyframes driftTagA { 0%,100%{transform:translate(0,0)} 50%{transform:translate(8px,-8px)} }
     @keyframes driftTagB { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-8px,10px)} }
     @keyframes driftTagC { 0%,100%{transform:translate(0,0)} 50%{transform:translate(6px,-12px)} }
+    @keyframes softFloat { 0%,100%{ box-shadow: 0 18px 40px rgba(0,0,0,0.08);} 50%{ box-shadow: 0 26px 56px rgba(0,0,0,0.12);} }
 
     section.block { padding: 16px 0; }
     .section-head { margin-bottom: 14px; }
@@ -556,7 +567,6 @@
       font-size: 14px;
       color: var(--muted);
     }
-
     .about-lead {
       margin: 0 0 10px;
       font-size: 24px;
@@ -564,7 +574,6 @@
       letter-spacing: -.05em;
       font-weight: 700;
     }
-
     .pills,
     .service-bullets {
       margin-top: 16px;
@@ -603,11 +612,13 @@
       position: relative;
       overflow: hidden;
       transition: transform .35s var(--ease), box-shadow .35s var(--ease);
+      animation: cardBreath 8s ease-in-out infinite;
     }
     .service-card:hover,
     .strength-card:hover,
     .case-card:hover,
     .sticky-card:hover { transform: translateY(-4px); }
+    @keyframes cardBreath { 0%,100%{ box-shadow: var(--shadow);} 50%{ box-shadow: 0 28px 92px rgba(0,0,0,0.11);} }
     .service-card::after,
     .strength-card::after,
     .case-card::after,
@@ -896,6 +907,8 @@
   <div class="orb a"></div>
   <div class="orb b"></div>
   <div class="orb c"></div>
+  <div class="orb d"></div>
+  <div class="orb e"></div>
 
   <div class="loading" id="loading">
     <div class="loading-inner">
@@ -1090,18 +1103,20 @@
     </section>
 
     <section class="block" id="experience">
-      <div class="wrap sticky-grid">
-        <div class="glass-card pad reveal">
-          <div class="kicker">Experience</div>
-          <h2 class="section-title">Appleっぽい気持ちよさで、<br>世界観ごと印象に残す。</h2>
-          <p class="copy">スクロールに合わせてカードがゆっくり浮き、余白と動きで体験をつくります。スマホでの見え方を起点に、触れた瞬間の“質感”まで設計しています。</p>
-        </div>
+      <div class="wrap">
+        <div class="sticky-grid">
+          <div class="glass-card pad reveal">
+            <div class="kicker">Experience</div>
+            <h2 class="section-title">世界観ごと、<br>印象に残す。</h2>
+            <p class="copy">スクロールに合わせてカードがゆっくり浮き、余白と動きで体験をつくります。スマホでの見え方を起点に、触れた瞬間の質感まで設計しています。</p>
+          </div>
 
-        <div class="sticky-frame reveal">
-          <div class="sticky-stack">
-            <div class="parallax-card" data-speed="0.10"><small>Phase 01</small><strong>整える</strong><span>ブランドの魅力、事業の強み、見せる順番を整理する。</span></div>
-            <div class="parallax-card" data-speed="0.18"><small>Phase 02</small><strong>つくる</strong><span>LP、資料、導線、コピーを一貫した世界観で形にする。</span></div>
-            <div class="parallax-card" data-speed="0.26"><small>Phase 03</small><strong>動かす</strong><span>営業・販促・販売に接続し、成果まで追いかける。</span></div>
+          <div class="sticky-frame reveal">
+            <div class="sticky-stack">
+              <div class="parallax-card" data-speed="0.10"><small>Phase 01</small><strong>整える</strong><span>ブランドの魅力、事業の強み、見せる順番を整理する。</span></div>
+              <div class="parallax-card" data-speed="0.18"><small>Phase 02</small><strong>つくる</strong><span>LP、資料、導線、コピーを一貫した世界観で形にする。</span></div>
+              <div class="parallax-card" data-speed="0.26"><small>Phase 03</small><strong>動かす</strong><span>営業・販促・販売に接続し、成果まで追いかける。</span></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1233,7 +1248,7 @@
       window.addEventListener('mousemove', (e) => {
         const x = (e.clientX / window.innerWidth - 0.5) * 8;
         const y = (e.clientY / window.innerHeight - 0.5) * 8;
-        phone.style.transform = `perspective(1600px) rotateY(${ -10 + x * 0.35 }deg) rotateX(${ 6 - y * 0.25 }deg)`;
+        phone.style.transform = `perspective(1600px) rotateY(${-10 + x * 0.35}deg) rotateX(${6 - y * 0.25}deg)`;
       });
     }
 
@@ -1248,6 +1263,53 @@
     };
     window.addEventListener('scroll', updateParallax, { passive: true });
     updateParallax();
+
+    const floatingEls = document.querySelectorAll('.floating-tag');
+    let tick = 0;
+    const animateScene = () => {
+      tick += 0.008;
+      floatingEls.forEach((el, i) => {
+        const amp = (i % 3 + 1) * 1.2;
+        const y = Math.sin(tick + i) * amp;
+        el.style.translate = `0 ${y}px`;
+      });
+      requestAnimationFrame(animateScene);
+    };
+    requestAnimationFrame(animateScene);
+
+    const cursor = document.createElement('div');
+    cursor.style.position = 'fixed';
+    cursor.style.width = '220px';
+    cursor.style.height = '220px';
+    cursor.style.borderRadius = '999px';
+    cursor.style.pointerEvents = 'none';
+    cursor.style.zIndex = '1';
+    cursor.style.opacity = '.35';
+    cursor.style.filter = 'blur(32px)';
+    cursor.style.background = 'radial-gradient(circle, rgba(255,255,255,.92) 0%, rgba(255,255,255,.24) 35%, rgba(255,255,255,0) 72%)';
+    cursor.style.transform = 'translate(-50%, -50%)';
+    document.body.appendChild(cursor);
+
+    if (window.matchMedia('(pointer:fine)').matches) {
+      let cx = window.innerWidth * 0.5;
+      let cy = window.innerHeight * 0.3;
+      let tx = cx;
+      let ty = cy;
+      window.addEventListener('mousemove', (e) => {
+        tx = e.clientX;
+        ty = e.clientY;
+      });
+      const moveCursor = () => {
+        cx += (tx - cx) * 0.12;
+        cy += (ty - cy) * 0.12;
+        cursor.style.left = `${cx}px`;
+        cursor.style.top = `${cy}px`;
+        requestAnimationFrame(moveCursor);
+      };
+      requestAnimationFrame(moveCursor);
+    } else {
+      cursor.style.display = 'none';
+    }
   </script>
 </body>
 </html>
